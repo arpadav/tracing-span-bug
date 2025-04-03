@@ -15,6 +15,7 @@ However, problem is fixed indirectly by removing any `tracing` spans created/ent
 
 * Run `bash run-tests.sh`
 * Run `bash run-tests.sh -c` to clean directories before running
+* Run `bash run-tests.sh -b <1|full>` to show backtrace (this just sets `RUST_BACKTRACE` env var)
 
 ## Why
 
