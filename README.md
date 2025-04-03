@@ -11,11 +11,17 @@ Then, performing a `reqwest::Client::get` will cause a panic within any of the a
 
 However, problem is fixed indirectly by removing any `tracing` spans created/entered in the `hyper-util` crate (dependency of `reqwest`).
 
+## What do you mean by `span`
+
+Only code changes in `hyper-util`: https://github.com/hyperium/hyper-util/pull/179/files
+
+This removes the `tracing::debug_span!` call, and does not enter it upon spawning a `tokio::task::spawn_blocking` task. This issue should persist across any type of `tracing::{x}_span!` call.
+
 ## Usage / Replication
 
 * Run `bash run-tests.sh`
 * Run `bash run-tests.sh -c` to clean directories before running
-* Run `bash run-tests.sh -b <1|full>` to show backtrace (this just sets `RUST_BACKTRACE` env var)
+* Run `bash run-tests.sh -b <1|full>` (this just sets `RUST_BACKTRACE` env var)
 
 ## Why
 
@@ -25,6 +31,6 @@ This is meant to be a temporary work-around for `hyper-util`, until `tracing` bu
 
 See:
 
-* https://github.com/hyperium/hyper-util/pull/134#issuecomment-2773237311
+* `tracing` design defect issue: https://github.com/tokio-rs/tracing/issues/3223
 * Temporary `hyper-util` PR: https://github.com/hyperium/hyper-util/pull/179
-* `hyper-util` Discussion: https://github.com/hyperium/hyper/issues/3870
+* `hyper-util` discussion: https://github.com/hyperium/hyper/issues/3870
