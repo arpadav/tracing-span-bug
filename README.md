@@ -11,8 +11,8 @@ However, problem is fixed indirectly by removing any `tracing` spans created/ent
 
 ## Tests
 
-See: https://github.com/arpadav/tracing-span-bug/blob/main/hyper-util-dns-with-span/src/lib.rs
-See: https://github.com/arpadav/tracing-span-bug/blob/main/hyper-util-dns-without-span/src/lib.rs
+* See: [hyper-util-dns-with-span/src/lib.rs](https://github.com/arpadav/tracing-span-bug/blob/main/hyper-util-dns-with-span/src/lib.rs)
+* See: [hyper-util-dns-without-span/src/lib.rs](https://github.com/arpadav/tracing-span-bug/blob/main/hyper-util-dns-without-span/src/lib.rs)
 
 The files should be identical. The only change is the removal of the `tracing::debug_span!` call from a patched `hyper-util` crate.
 
