@@ -8,6 +8,4 @@ demo = { path = "../demo" }
 reqwest = { version = "0.12.15" }
 
 [patch.crates-io]
-# TODO: replace this with `hyper-util` as normal, once PR goes through.
-# for the time being, store local copy with change here
-hyper-util = { path = "../patches/hyper-util-modified" }
+hyper-util = { git = "https://github.com/arpadav/hyper-util/", branch = "legacyclient-tracing-span-removed" }

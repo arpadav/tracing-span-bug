@@ -15,7 +15,7 @@ use tracing_subscriber::fmt::writer::MakeWriterExt;
 /// Directory to store log files
 pub const LOG_DIR: &str = "logs";
 
-/// Global guard to keep the main logger's [`WorkerGuard`] alive
+/// Global guard to keep the global default logger's [`WorkerGuard`] alive
 static GLOBAL_LOGGER_GUARD: OnceLock<WorkerGuard> = OnceLock::new();
 
 /// Initializes the a logger. This is a custom logger, with a given name
@@ -24,9 +24,13 @@ pub fn init_global_logger(file_name: &str, level: tracing::Level) {
     let _ = std::fs::create_dir_all(LOG_DIR);
     let file_appender = tracing_appender::rolling::never(LOG_DIR, file_name);
     let (non_blocking_file, guard) = tracing_appender::non_blocking(file_appender);
-    GLOBAL_LOGGER_GUARD
-        .set(guard)
-        .expect("Failed to set global logger guard");
+    match GLOBAL_LOGGER_GUARD.set(guard) {
+        Ok(_) => (),
+        Err(_) => {
+            tracing::trace!("Global logger already set. Ignoring.");
+            return;
+        },
+    }
     let combined_writer = non_blocking_file.and(std::io::stdout.with_max_level(level));
     let subscriber = tracing_subscriber::fmt()
         .with_max_level(level)
@@ -36,8 +40,8 @@ pub fn init_global_logger(file_name: &str, level: tracing::Level) {
 }
 
 /// Constructs a logger that writes logs to a file and the console.
-pub fn build_logger(name: &str, level: tracing::Level) -> (Dispatch, WorkerGuard) {
-    let file_appender = tracing_appender::rolling::never(LOG_DIR, format!("{}.log", name));
+pub fn build_logger(file_name: &str, level: tracing::Level) -> (Dispatch, WorkerGuard) {
+    let file_appender = tracing_appender::rolling::never(LOG_DIR, file_name);
     let (non_blocking_file, guard) = tracing_appender::non_blocking(file_appender);
     let combined_writer = non_blocking_file.and(std::io::stdout.with_max_level(level));
     let subscriber = tracing_subscriber::fmt()

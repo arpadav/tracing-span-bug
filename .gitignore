@@ -1,3 +1,6 @@
+**/_*
+**/*.log
+**/*.output
 **/target
 **/logs
 **/Cargo.lock
