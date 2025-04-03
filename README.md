@@ -2,14 +2,19 @@
 
 For projects which have:
 
-* a default logger using `tracing`
-* spawn multiple threads
-* each thread has its own async runtime
-* each thread has its own `tracing` logger span
+* a default logger using `tracing`, initialized on startup
+* followed by a local `tracing` logger
 
 Then, performing a `reqwest::Client::get` will cause a panic within any of the async runtimes. Why? Not sure. This is a problem with `tracing`
 
 However, problem is fixed indirectly by removing any `tracing` spans created/entered in the `hyper-util` crate (dependency of `reqwest`).
+
+## Tests
+
+See: https://github.com/arpadav/tracing-span-bug/blob/main/hyper-util-dns-with-span/src/lib.rs
+See: https://github.com/arpadav/tracing-span-bug/blob/main/hyper-util-dns-without-span/src/lib.rs
+
+The files should be identical. The only change is the removal of the `tracing::debug_span!` call from a patched `hyper-util` crate.
 
 ## What do you mean by `span`
 
